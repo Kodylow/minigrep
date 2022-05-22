@@ -1,15 +1,24 @@
-use std::env;
+use minigrep::Config;
+use std::{env, process};
 
 fn main() {
     // iterators produce a series of values, collect turns the vals into a collection
-    //2 arguments, query and filename. index 0 is this program's name
-
-    //example: cargo run test sample.txt
     let args: Vec<String> = env::args().collect();
 
-    let query = &args[1];
-    let filename = &args[2];
+    let config = Config::new(&args).unwrap_or_else(|err| {
+        // unwrap_or_else lets you handle error message
+        // instead of throwing panic on bad unwraps
+        println!("Problem parsing arguments: {}", err);
+        // A nonzero exit status is a convention to signal to the
+        // that the program exited with an error state.
+        process::exit(1);
+    });
 
-    println!("Searching for {}", query);
-    println!("In file {}", filename);
+    println!("Searching for {}", config.query);
+    println!("In file {}", config.filename);
+
+    if let Err(e) = minigrep::run(config) {
+        println!("Application error: {}", e);
+        process::exit(1);
+    };
 }
