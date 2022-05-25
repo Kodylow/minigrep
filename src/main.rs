@@ -2,10 +2,8 @@ use minigrep::Config;
 use std::{env, process};
 
 fn main() {
-    // iterators produce a series of values, collect turns the vals into a collection
-    let args: Vec<String> = env::args().collect();
-
-    let config = Config::new(&args).unwrap_or_else(|err| {
+    // env args returns an iterator just use that!
+    let config = Config::new(env::args()).unwrap_or_else(|err| {
         // unwrap_or_else lets you handle error message
         // instead of throwing panic on bad unwraps
         eprintln!("Problem parsing arguments: {}", err);
